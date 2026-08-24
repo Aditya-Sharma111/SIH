@@ -599,11 +599,11 @@ export function formatDateString(dateStr: string): string {
   }
 }
 
-export function getDaysDifference(targetDateStr: string, fromDateStr = "2026-08-25"): number {
+export function getDaysDifference(targetDateStr: string): number {
   try {
-    const d1 = new Date(fromDateStr);
+    const todayIST = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" }));
     const d2 = new Date(targetDateStr);
-    const diffTime = d2.getTime() - d1.getTime();
+    const diffTime = d2.getTime() - todayIST.getTime();
     return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   } catch {
     return 0;

@@ -2,11 +2,23 @@
 
 import React from "react";
 import { RegisteredCrop, WeatherDay } from "../types";
-import { formatDateString, getActivityTypeBadge, WEATHER_FORECAST } from "../mockData";
+import { formatDateString, getActivityTypeBadge } from "../mockData";
+
+function conditionEmoji(condition: WeatherDay["condition"]): string {
+  switch (condition) {
+    case "rainy":         return "🌧️";
+    case "sunny":         return "☀️";
+    case "storm":         return "⛈️";
+    case "partly_cloudy": return "⛅";
+    case "cloudy":        return "☁️";
+    default:              return "🌤️";
+  }
+}
 
 interface SelectedDatePanelProps {
   currentCrop: RegisteredCrop;
   selectedDate: string;
+  weatherForecast: WeatherDay[];
   onToggleActivity: (activityId: string) => void;
   onOpenAddModalForDate: (dateStr: string) => void;
   onOpenAiWithPrompt: (prompt: string) => void;
@@ -15,13 +27,14 @@ interface SelectedDatePanelProps {
 export const SelectedDatePanel: React.FC<SelectedDatePanelProps> = ({
   currentCrop,
   selectedDate,
+  weatherForecast,
   onToggleActivity,
   onOpenAddModalForDate,
   onOpenAiWithPrompt,
 }) => {
   const selectedDateActivities = currentCrop.activities.filter((act) => act.date === selectedDate);
-  const selectedDateWeather: WeatherDay =
-    WEATHER_FORECAST.find((w) => w.date === selectedDate) || WEATHER_FORECAST[0];
+  const selectedDateWeather: WeatherDay | undefined =
+    weatherForecast.find((w) => w.date === selectedDate) || weatherForecast[0];
 
   return (
     <div className="rounded-2xl bg-white/60 backdrop-blur-md p-5 sm:p-6 border border-white/70 shadow-sm space-y-5">
@@ -43,31 +56,32 @@ export const SelectedDatePanel: React.FC<SelectedDatePanelProps> = ({
         </button>
       </div>
 
-      {/* Weather snapshot */}
-      <div className="rounded-xl bg-white/50 backdrop-blur-sm p-3.5 border border-white/60 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <span className="text-3xl">
-            {selectedDateWeather.condition === "rainy"
-              ? "🌧️"
-              : selectedDateWeather.condition === "sunny"
-              ? "☀️"
-              : "⛅"}
-          </span>
-          <div>
-            <p className="text-xs font-bold text-zinc-700 capitalize">
-              {selectedDateWeather.condition.replace("_", " ")} ({selectedDateWeather.tempHigh}°C /{" "}
-              {selectedDateWeather.tempLow}°C)
-            </p>
-            <p className="text-[11px] text-zinc-500">
-              Rain: {selectedDateWeather.rainChance}% · Humidity: {selectedDateWeather.humidity}% · Wind:{" "}
-              {selectedDateWeather.windSpeed} km/h
-            </p>
+      {/* Weather snapshot — live OWM data */}
+      {selectedDateWeather ? (
+        <div className="rounded-xl bg-white/50 backdrop-blur-sm p-3.5 border border-white/60 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <span className="text-3xl">{conditionEmoji(selectedDateWeather.condition)}</span>
+            <div>
+              <p className="text-xs font-bold text-zinc-700 capitalize">
+                {selectedDateWeather.condition.replace("_", " ")} &nbsp;{selectedDateWeather.tempHigh}°C / {selectedDateWeather.tempLow}°C
+              </p>
+              <p className="text-[11px] text-zinc-500">
+                💧 {selectedDateWeather.rainChance}% rain · 💦 {selectedDateWeather.humidity}% humidity · 💨 {selectedDateWeather.windSpeed} km/h
+              </p>
+              {selectedDateWeather.alert && (
+                <p className="text-[10px] text-amber-700 font-medium mt-0.5">{selectedDateWeather.alert}</p>
+              )}
+            </div>
           </div>
+          <span className="text-xs font-semibold px-2 py-0.5 rounded-md bg-white/70 text-zinc-700 border border-white/60">
+            🌿 {currentCrop.currentStage}
+          </span>
         </div>
-        <span className="text-xs font-semibold px-2 py-0.5 rounded-md bg-white/70 text-zinc-700 border border-white/60">
-          🌿 {currentCrop.currentStage}
-        </span>
-      </div>
+      ) : (
+        <div className="rounded-xl bg-white/30 p-3 border border-white/40 text-center text-xs text-zinc-400">
+          Weather data loading…
+        </div>
+      )}
 
       {/* Activities */}
       <div className="space-y-3">
