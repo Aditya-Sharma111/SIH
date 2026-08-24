@@ -1,0 +1,316 @@
+"use client";
+
+import React, { useState } from "react";
+import { InsuranceBackground } from "./components/InsuranceBackground";
+import { InsuranceHeader } from "./components/InsuranceHeader";
+import { RegistrationStepper } from "./components/RegistrationStepper";
+import { mockFarmer, mockRisk, initialDocuments, mockApplication } from "./data/mockInsurance";
+import { FarmerProfile, InsuranceState, DocumentItem } from "./types/insurance";
+
+/**
+ * Smart Crop Insurance Portal — Wise.com Design Architecture (Bright Light Theme)
+ * Features a 50/50 Dual Stage Split in a luminous, clean, airy aesthetic:
+ * - Left Stage: Bold Brand Narrative, Live Distress Telemetry (81/100), Ground Truth & Trust Pillars
+ * - Right Stage: The Interactive Conversion & Subsidy Calculation Widget (Light Wise-style)
+ * 100% Transparent 4K background (BG_3.png) with crystal-clear white frosted glass surfaces.
+ */
+export default function InsurancePage() {
+  const [lang, setLang] = useState<"EN" | "HI" | "OR">("EN");
+  const [status, setStatus] = useState<InsuranceState>("NOT_REGISTERED");
+  const [farmer, setFarmer] = useState<FarmerProfile>(mockFarmer);
+  const [documents, setDocuments] = useState<DocumentItem[]>(initialDocuments);
+  const [activeView, setActiveView] = useState<"dashboard" | "stepper">("dashboard");
+  const [isEditingParcel, setIsEditingParcel] = useState(false);
+  const [showRulesModal, setShowRulesModal] = useState(false);
+  const [showLossReported, setShowLossReported] = useState(false);
+
+  return (
+    <div className="relative min-h-screen font-sans selection:bg-emerald-600 selection:text-white text-gray-900 pb-16">
+      {/* 4K Transparent Bright Background (BG_3.png / BG_2.png) */}
+      <InsuranceBackground />
+
+      {/* Foreground Container */}
+      <div className="relative z-10 flex flex-col min-h-screen">
+        {/* Top Header Navigation */}
+        <InsuranceHeader
+          lang={lang}
+          onLangChange={setLang}
+          onBack={activeView === "stepper" ? () => setActiveView("dashboard") : undefined}
+        />
+
+        {/* Main Content Area */}
+        <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-8 py-8 lg:py-12">
+          {activeView === "stepper" ? (
+            /* Registration Stepper & Status Timeline per PRD §9 & §11 */
+            <div className="max-w-4xl mx-auto">
+              <RegistrationStepper
+                farmer={farmer}
+                documents={documents}
+                application={mockApplication}
+                onComplete={() => setStatus("APPLICATION_PENDING")}
+                onCancel={() => setActiveView("dashboard")}
+              />
+            </div>
+          ) : (
+            /* Wise.com 50/50 Dual Stage Split Grid (Light Theme) */
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+              {/* ========================================================= */}
+              {/* LEFT STAGE: The "Why" — Telemetry, Risk & Ground Truth    */}
+              {/* ========================================================= */}
+              <div className="lg:col-span-6 space-y-8 text-gray-900">
+                {/* Government & Scheme Tag */}
+                <div className="flex flex-wrap items-center gap-2.5">
+                  <span className="px-3.5 py-1.5 rounded-full bg-emerald-100/90 text-emerald-950 font-extrabold text-xs tracking-wider uppercase border border-emerald-300 shadow-xs">
+                    🌾 PMFBY Scheme
+                  </span>
+                  <span className="px-3.5 py-1.5 rounded-full bg-white/90 text-gray-800 font-bold text-xs border border-gray-200 shadow-xs">
+                    📍 {farmer.village}, {farmer.district}, {farmer.state}
+                  </span>
+                </div>
+
+                {/* Big Impactful Wise-style Headline */}
+                <div className="space-y-3">
+                  <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-gray-950 tracking-tight leading-[1.15]">
+                    Protect your <span className="text-emerald-700">Paddy crop</span> when distress strikes.
+                  </h1>
+                  <p className="text-base sm:text-lg text-gray-700 font-medium leading-relaxed max-w-xl">
+                    Smart crop monitoring detected high risk in your area. Check eligibility and register for subsidized government insurance in minutes.
+                  </p>
+                </div>
+
+                {/* Live Distress Telemetry Radar Card */}
+                <div className="rounded-3xl bg-white/90 backdrop-blur-2xl border border-white p-6 sm:p-7 shadow-lg space-y-4">
+                  <div className="flex items-center justify-between pb-3 border-b border-gray-200/80">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xl">🚨</span>
+                      <span className="text-xs uppercase font-black tracking-wider text-gray-600">
+                        DISTRESS TELEMETRY RADAR
+                      </span>
+                    </div>
+
+                    <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-rose-100 border border-rose-300 text-rose-950 text-xs font-black">
+                      <span className="animate-pulse">🔴</span>
+                      <span>{mockRisk.score} / 100 HIGH RISK</span>
+                    </div>
+                  </div>
+
+                  {/* 3 Ground Truth Meters */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    {mockRisk.factors.map((factor) => (
+                      <div
+                        key={factor.id}
+                        className="p-3.5 rounded-2xl bg-gray-50/90 border border-gray-200/90 flex flex-col justify-between gap-1 shadow-xs"
+                      >
+                        <div className="flex items-center gap-1.5 text-xs font-bold text-gray-800">
+                          <span>{factor.icon}</span>
+                          <span className="truncate">{factor.label}</span>
+                        </div>
+                        <div className="text-xs text-rose-700 font-extrabold">{factor.value}</div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <p className="text-xs text-gray-600 leading-relaxed pt-1">
+                    🌧️ Continuous dry spell over Mayurbhanj root zone triggers PMFBY mid-season assistance rules.
+                  </p>
+                </div>
+
+                {/* 3 Trust Pillars */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2 text-xs">
+                  <div className="p-4 rounded-2xl bg-white/90 backdrop-blur-md border border-white shadow-sm">
+                    <div className="text-emerald-800 font-black text-sm">₹6,250 Subsidy</div>
+                    <p className="text-gray-600 mt-1 leading-snug">80%+ co-shared by Central &amp; State Govts</p>
+                  </div>
+
+                  <div className="p-4 rounded-2xl bg-white/90 backdrop-blur-md border border-white shadow-sm">
+                    <div className="text-emerald-800 font-black text-sm">Direct DBT</div>
+                    <p className="text-gray-600 mt-1 leading-snug">Claims sent to your Aadhaar bank account</p>
+                  </div>
+
+                  <div className="p-4 rounded-2xl bg-white/90 backdrop-blur-md border border-white shadow-sm">
+                    <div className="text-emerald-800 font-black text-sm">Helpline 14447</div>
+                    <p className="text-gray-600 mt-1 leading-snug">24×7 localized crop loss reporting</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* ========================================================= */}
+              {/* RIGHT STAGE: The Wise-Style Interactive Conversion Widget */}
+              {/* ========================================================= */}
+              <div className="lg:col-span-6">
+                <div className="rounded-3xl bg-white/95 backdrop-blur-2xl border border-white p-7 sm:p-9 shadow-2xl space-y-6 select-none">
+                  {/* Widget Header: Status & Farmer */}
+                  <div className="flex items-center justify-between pb-4 border-b border-gray-200/90">
+                    <div>
+                      <span className="text-xs uppercase font-extrabold tracking-wider text-gray-500">
+                        INSURANCE ELIGIBILITY &amp; PREMIUM
+                      </span>
+                      <h2 className="text-xl font-black text-gray-950 mt-0.5">
+                        {farmer.name} — {farmer.crop}
+                      </h2>
+                    </div>
+
+                    <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-amber-100 border border-amber-300 text-amber-950 text-xs font-black">
+                      <span>⚠️</span>
+                      <span>{status === "NOT_REGISTERED" ? "NOT REGISTERED" : status}</span>
+                    </div>
+                  </div>
+
+                  {/* Parcel Details Strip */}
+                  <div className="p-4 rounded-2xl bg-gray-50/90 border border-gray-200/90 space-y-2 text-xs sm:text-sm">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-gray-700">Pre-Filled Farm Profile</span>
+                      <button
+                        onClick={() => setIsEditingParcel(!isEditingParcel)}
+                        className="text-xs font-extrabold text-emerald-800 hover:underline"
+                      >
+                        {isEditingParcel ? "Done" : "Edit Details"}
+                      </button>
+                    </div>
+
+                    {isEditingParcel ? (
+                      <div className="grid grid-cols-2 gap-2 pt-2 text-xs">
+                        <div>
+                          <label className="text-gray-500 font-medium">Crop</label>
+                          <input
+                            type="text"
+                            value={farmer.crop}
+                            onChange={(e) => setFarmer({ ...farmer, crop: e.target.value })}
+                            className="w-full px-2.5 py-1.5 rounded-lg border border-gray-300 bg-white"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-gray-500 font-medium">Land Area</label>
+                          <input
+                            type="text"
+                            value={farmer.area}
+                            onChange={(e) => setFarmer({ ...farmer, area: e.target.value })}
+                            className="w-full px-2.5 py-1.5 rounded-lg border border-gray-300 bg-white"
+                          />
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex flex-wrap items-center gap-2 pt-1">
+                        <span className="px-2.5 py-1 rounded-lg bg-white border border-gray-200 font-extrabold text-gray-900 text-xs">
+                          🌾 {farmer.crop}
+                        </span>
+                        <span className="px-2.5 py-1 rounded-lg bg-white border border-gray-200 font-extrabold text-gray-900 text-xs">
+                          📐 {farmer.area}
+                        </span>
+                        <span className="px-2.5 py-1 rounded-lg bg-white border border-gray-200 font-extrabold text-gray-900 text-xs">
+                          📍 {farmer.district}
+                        </span>
+                        <span className="px-2.5 py-1 rounded-lg bg-white border border-gray-200 font-extrabold text-gray-900 text-xs">
+                          ☀️ {farmer.season}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Financial Subsidy Calculation Box (Clean Light-Themed Wise Fee Breakdown) */}
+                  <div className="p-5 rounded-2xl bg-emerald-50/90 border-2 border-emerald-200/90 space-y-3 shadow-xs">
+                    <div className="flex justify-between items-center text-xs text-gray-600 font-medium">
+                      <span>Maximum Sum Insured (Total Cover)</span>
+                      <span className="text-sm font-extrabold text-gray-900">{farmer.sumInsured}</span>
+                    </div>
+
+                    <div className="flex justify-between items-center text-xs text-emerald-800 font-medium">
+                      <span>Government Co-Subsidy (Central + State 83%)</span>
+                      <span className="font-extrabold text-emerald-700">- ₹6,250</span>
+                    </div>
+
+                    <div className="pt-3 border-t border-emerald-200 flex justify-between items-center">
+                      <div>
+                        <span className="text-xs font-black uppercase tracking-wider text-emerald-950 block">
+                          Total Farmer Share (2%)
+                        </span>
+                        <span className="text-[11px] text-gray-500 font-medium">Only amount payable by farmer</span>
+                      </div>
+                      <div className="text-2xl font-black text-amber-700 font-mono">
+                        {farmer.farmerPremium}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Attached Documents Mini-Checklist */}
+                  <div className="space-y-2 text-xs">
+                    <div className="flex items-center justify-between text-gray-500 font-bold uppercase tracking-wider text-[11px]">
+                      <span>Document Checklist</span>
+                      <span className="text-emerald-800">
+                        {documents.filter((d) => d.status === "Uploaded").length} of {documents.length} Attached
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      {documents.map((doc) => (
+                        <div
+                          key={doc.id}
+                          className="p-2.5 rounded-xl bg-gray-50 border border-gray-200 flex items-center justify-between gap-2"
+                        >
+                          <div className="truncate font-semibold text-gray-800">
+                            {doc.status === "Uploaded" ? "✓" : "○"} {doc.name.split("/")[0]}
+                          </div>
+                          <span
+                            className={`px-2 py-0.5 rounded-md text-[10px] font-extrabold ${
+                              doc.status === "Uploaded"
+                                ? "bg-emerald-100 text-emerald-800"
+                                : "bg-amber-100 text-amber-900"
+                            }`}
+                          >
+                            {doc.status}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Single Big Primary Action CTA (Wise style) */}
+                  <div className="pt-2">
+                    <button
+                      onClick={() => setActiveView("stepper")}
+                      className="w-full py-4 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-base sm:text-lg tracking-wide transition-all active:scale-[0.98] shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
+                    >
+                      <span>REGISTER FOR PMFBY INSURANCE</span>
+                      <span>→</span>
+                    </button>
+                  </div>
+
+                  {/* Quick Bottom Triggers: Emergency Loss & Guidelines */}
+                  <div className="pt-3 border-t border-gray-200 flex flex-wrap items-center justify-between gap-3 text-xs">
+                    {showLossReported ? (
+                      <span className="text-emerald-800 font-bold">✓ Loss Intimation Docket Logged (14447)</span>
+                    ) : (
+                      <button
+                        onClick={() => setShowLossReported(true)}
+                        className="text-rose-700 font-extrabold hover:underline flex items-center gap-1"
+                      >
+                        <span>🚨 Report Crop Loss (72h)</span>
+                      </button>
+                    )}
+
+                    <button
+                      onClick={() => setShowRulesModal(!showRulesModal)}
+                      className="text-gray-600 font-bold hover:text-gray-900 hover:underline"
+                    >
+                      {showRulesModal ? "Hide PMFBY Rules ▲" : "View PMFBY Rules ↗"}
+                    </button>
+                  </div>
+
+                  {/* Expanded Guidelines Pane */}
+                  {showRulesModal && (
+                    <div className="p-4 rounded-2xl bg-gray-50 border border-gray-200 text-xs text-gray-700 space-y-2 leading-relaxed animate-fadeIn">
+                      <div className="font-bold text-gray-900">Official PMFBY Coverage Rules:</div>
+                      <p>• <strong>Prevented Sowing:</strong> Up to 25% on-account claim if rainfall prevents planting.</p>
+                      <p>• <strong>Standing Crop:</strong> Drought &amp; dry spell yield relief based on CCE assessment.</p>
+                      <p>• <strong>Post-Harvest:</strong> Up to 14 days coverage for cut-and-spread crops in field.</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+        </main>
+      </div>
+    </div>
+  );
+}
