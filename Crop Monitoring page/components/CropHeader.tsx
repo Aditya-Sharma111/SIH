@@ -8,6 +8,7 @@ interface CropHeaderProps {
   crops: RegisteredCrop[];
   selectedCropId: string;
   onSelectCrop: (cropId: string) => void;
+  liveWeatherAlerts: string[];
   onOpenAiDrawer: () => void;
   onOpenAddModal: () => void;
 }
@@ -16,6 +17,7 @@ export const CropHeader: React.FC<CropHeaderProps> = ({
   crops,
   selectedCropId,
   onSelectCrop,
+  liveWeatherAlerts,
   onOpenAiDrawer,
   onOpenAddModal
 }) => {
@@ -234,8 +236,8 @@ export const CropHeader: React.FC<CropHeaderProps> = ({
         </div>
       </section>
 
-      {/* Weather Alert Banner if present */}
-      {currentCrop.weatherAlerts && currentCrop.weatherAlerts.length > 0 && (
+      {/* Weather Alert Banner — driven by live OWM forecast */}
+      {liveWeatherAlerts && liveWeatherAlerts.length > 0 && (
         <div className="rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 p-4 flex items-start gap-3.5 shadow-xs">
           <span className="text-2xl shrink-0">🌦️</span>
           <div className="space-y-1 flex-1">
@@ -246,7 +248,7 @@ export const CropHeader: React.FC<CropHeaderProps> = ({
               </span>
             </h4>
             <ul className="text-xs sm:text-sm text-amber-800 dark:text-amber-300/90 list-disc list-inside space-y-0.5">
-              {currentCrop.weatherAlerts.map((alert, idx) => (
+              {liveWeatherAlerts.map((alert, idx) => (
                 <li key={idx}>{alert}</li>
               ))}
             </ul>

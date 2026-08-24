@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useMemo } from "react";
-import { RegisteredCrop, Activity } from "../types";
-import { WEATHER_FORECAST, getActivityTypeBadge } from "../mockData";
+import { RegisteredCrop, WeatherDay, Activity } from "../types";
+import { getActivityTypeBadge } from "../mockData";
 
 interface InteractiveCalendarProps {
   currentCrop: RegisteredCrop;
@@ -12,6 +12,7 @@ interface InteractiveCalendarProps {
   onChangeMonth: (newDate: Date) => void;
   filterType: string;
   onFilterChange: (newFilter: string) => void;
+  weatherForecast: WeatherDay[];
 }
 
 export const InteractiveCalendar: React.FC<InteractiveCalendarProps> = ({
@@ -22,7 +23,11 @@ export const InteractiveCalendar: React.FC<InteractiveCalendarProps> = ({
   onChangeMonth,
   filterType,
   onFilterChange,
+  weatherForecast,
 }) => {
+  const todayIST = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" }));
+  const todayStr = `${todayIST.getFullYear()}-${String(todayIST.getMonth() + 1).padStart(2, "0")}-${String(todayIST.getDate()).padStart(2, "0")}`;
+
   const year = currentMonthDate.getFullYear();
   const month = currentMonthDate.getMonth();
 
@@ -130,11 +135,11 @@ export const InteractiveCalendar: React.FC<InteractiveCalendarProps> = ({
           const dayNum = i + 1;
           const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(dayNum).padStart(2, "0")}`;
           const isSelected = selectedDate === dateStr;
-          const isToday = dateStr === "2026-08-25";
+          const isToday = dateStr === todayStr;
           const dayActivities = activitiesByDate[dateStr] || [];
           const isSowingDay = dateStr === currentCrop.sowingDate;
           const isHarvestDay = dateStr === currentCrop.expectedHarvestDate;
-          const hasRain = WEATHER_FORECAST.some((w) => w.date === dateStr && w.condition === "rainy");
+          const hasRain = weatherForecast.some((w) => w.date === dateStr && (w.condition === "rainy" || w.condition === "storm"));
 
           return (
             <div
