@@ -37,10 +37,12 @@ const SignInPage = () => {
               footerActionText: "text-zinc-300",
               footerActionLink: "text-emerald-400 hover:text-emerald-300",
             },
-            layout: {
-              socialButtonsPlacement: "bottom",
-              socialButtonsVariant: "blockButton",
-            },
+            ...( {
+              layout: {
+                socialButtonsPlacement: "bottom",
+                socialButtonsVariant: "blockButton",
+              },
+            } as any),
           }}
           routing="path"
           path="/sign-in"

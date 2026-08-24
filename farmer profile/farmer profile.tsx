@@ -1,0 +1,802 @@
+"use client";
+
+import React, { useState } from "react";
+import Link from "next/link";
+import {
+  User,
+  MapPin,
+  Globe,
+  Sprout,
+  Layers,
+  Activity,
+  IndianRupee,
+  Clock,
+  Bell,
+  ShieldCheck,
+  Plus,
+  Edit3,
+  CheckCircle2,
+  ChevronRight,
+  ExternalLink,
+  Sparkles,
+  Search,
+  X,
+  Home,
+  BarChart3,
+  Store,
+  Check
+} from "lucide-react";
+
+export default function FarmerProfilePage() {
+  // Master Farmer State (following PRD specs & mock data)
+  const [farmer, setFarmer] = useState({
+    name: "Ramesh",
+    role: "Farmer & Landholder",
+    village: "Demo Village",
+    district: "Mayurbhanj",
+    state: "Odisha",
+    language: "or", // 'en' | 'hi' | 'or'
+    phone: "+91 98451 28210",
+    maskedPhone: "+91 9XXXX XX210",
+    landArea: "2.5 acres",
+    currentCrop: "Paddy",
+    sowingDate: "12 July 2026",
+    cropStage: "Vegetative Stage",
+    cropHealth: "Moderate Stress",
+    healthStatus: "warning", // good | warning | critical
+    loanAmount: "₹1,20,000",
+    loanDueDate: "30 August 2026",
+    loanDueInDays: 8,
+    profileCompleteness: 85,
+    farms: [
+      { id: "1", name: "North Plot (Plot 01)", area: "1.8 acres", location: "Mayurbhanj Sector 4", crop: "Paddy (Swarna)", status: "Active" },
+      { id: "2", name: "South Stream Plot", area: "0.7 acres", location: "Riverside Zone B", crop: "Mustard & Pulses", status: "Active" }
+    ],
+    notifications: {
+      weather: true,
+      risk: true,
+      market: false,
+      farming: true,
+      officer: true
+    }
+  });
+
+  const [activeTab, setActiveTab] = useState("Home");
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  // Edit Form State
+  const [editFormData, setEditFormData] = useState({
+    name: farmer.name,
+    phone: farmer.phone,
+    village: farmer.village,
+    district: farmer.district,
+    language: farmer.language
+  });
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const showToast = (msg: string) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(null), 3000);
+  };
+
+  const handleLanguageChange = (lang: string) => {
+    setFarmer(prev => ({ ...prev, language: lang }));
+    showToast(lang === "or" ? "ଭାଷା ସଫଳତାର ସହିତ ପରିବର୍ତ୍ତିତ ହୋଇଛି (Odia)" : lang === "hi" ? "भाषा सफलतापूर्वक बदल दी गई (Hindi)" : "Language updated to English");
+  };
+
+  const handleNotificationToggle = (key: keyof typeof farmer.notifications) => {
+    setFarmer(prev => ({
+      ...prev,
+      notifications: {
+        ...prev.notifications,
+        [key]: !prev.notifications[key]
+      }
+    }));
+    showToast("Preferences updated");
+  };
+
+  const handleAddFarm = () => {
+    const newFarm = {
+      id: String(farmer.farms.length + 1),
+      name: `East Basin Plot (Plot 0${farmer.farms.length + 1})`,
+      area: "1.2 acres",
+      location: "East Canal Belt",
+      crop: "Groundnut",
+      status: "Active"
+    };
+    setFarmer(prev => ({
+      ...prev,
+      farms: [...prev.farms, newFarm],
+      profileCompleteness: Math.min(100, prev.profileCompleteness + 5)
+    }));
+    showToast("New farm added successfully!");
+  };
+
+  const openEditModal = () => {
+    setEditFormData({
+      name: farmer.name,
+      phone: farmer.phone,
+      village: farmer.village,
+      district: farmer.district,
+      language: farmer.language
+    });
+    setErrors({});
+    setIsEditModalOpen(true);
+  };
+
+  const handleSaveProfile = (e: React.FormEvent) => {
+    e.preventDefault();
+    const newErrors: Record<string, string> = {};
+    if (!editFormData.name.trim()) newErrors.name = "Name cannot be empty";
+    if (!editFormData.village.trim()) newErrors.village = "Village cannot be empty";
+    if (!editFormData.district.trim()) newErrors.district = "District cannot be empty";
+    if (!editFormData.phone.trim() || editFormData.phone.length < 10) newErrors.phone = "Enter a valid 10-digit phone number";
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    const masked = editFormData.phone.length >= 10
+      ? editFormData.phone.slice(0, 5) + "XXXX" + editFormData.phone.slice(-3)
+      : editFormData.phone;
+
+    setFarmer(prev => ({
+      ...prev,
+      name: editFormData.name,
+      phone: editFormData.phone,
+      maskedPhone: masked,
+      village: editFormData.village,
+      district: editFormData.district,
+      language: editFormData.language
+    }));
+    setIsEditModalOpen(false);
+    showToast("Profile details updated successfully!");
+  };
+
+  return (
+    <div className="relative min-h-screen w-full bg-[#e8ece9] text-[#1e2a22] font-sans antialiased overflow-x-hidden selection:bg-[#d8e678] selection:text-black">
+      {/* Dynamic Background Image with Theme Tint Overlay */}
+      <div
+        className="fixed inset-0 pointer-events-none z-0 bg-cover bg-center sm:bg-top bg-no-repeat opacity-95 transition-all duration-700"
+        style={{ backgroundImage: `url('/farmer-bg.png')` }}
+      />
+
+      {/* Atmospheric Glass/Gradient Vignette tuned for BG_2.png */}
+      <div className="fixed inset-0 pointer-events-none z-0 bg-gradient-to-b from-white/60 via-white/20 to-black/35 backdrop-blur-[2px]" />
+
+      {/* Main Glass Shell Container */}
+      <div className="relative z-10 max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 pb-28">
+
+        {/* TOP NAVBAR (Exact match to Hecta aesthetic from reference image) */}
+        <header className="w-full bg-white/75 backdrop-blur-xl border border-white/60 shadow-[0_8px_32px_rgba(0,0,0,0.06)] rounded-full px-5 py-3.5 mb-6 flex items-center justify-between transition-all">
+          <Link href="/" className="flex items-center gap-3 hover:opacity-90 transition">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#1f3d2b] to-[#2f6b3c] flex items-center justify-center text-[#d8e678] shadow-md shadow-emerald-950/20">
+              <Sprout className="w-5 h-5" />
+            </div>
+            <div className="flex flex-col">
+              <span className="font-extrabold text-lg tracking-tight text-[#16271c]">hect<span className="text-[#3b7c4a]">a</span></span>
+              <span className="text-[9px] uppercase tracking-widest text-[#7a8b6f] font-semibold -mt-1">Smart Crop</span>
+            </div>
+          </Link>
+
+          <nav className="hidden md:flex items-center gap-1 bg-black/5 p-1 rounded-full border border-black/5 text-xs font-medium">
+            <Link
+              href="/"
+              className="px-4 py-1.5 rounded-full transition-all duration-200 flex items-center gap-1.5 text-[#3f5245] hover:text-black hover:bg-white/50"
+            >
+              Crop Monitor
+            </Link>
+            <Link
+              href="/market"
+              className="px-4 py-1.5 rounded-full transition-all duration-200 flex items-center gap-1.5 text-[#3f5245] hover:text-black hover:bg-white/50"
+            >
+              Market
+            </Link>
+            <Link
+              href="/insurance"
+              className="px-4 py-1.5 rounded-full transition-all duration-200 flex items-center gap-1.5 text-[#3f5245] hover:text-black hover:bg-white/50"
+            >
+              Insurance
+            </Link>
+            <Link
+              href="/farmer-profile"
+              className="px-4 py-1.5 rounded-full transition-all duration-200 flex items-center gap-1.5 bg-[#1c2e22] text-white shadow-sm font-semibold"
+            >
+              <div className="w-1.5 h-1.5 rounded-full bg-[#d8e678]" />
+              Profile
+            </Link>
+          </nav>
+
+          <div className="flex items-center gap-2 sm:gap-3">
+            <button className="w-9 h-9 rounded-full bg-white/90 hover:bg-white border border-black/5 flex items-center justify-center text-gray-700 shadow-sm transition hover:scale-105">
+              <Search className="w-4 h-4" />
+            </button>
+            <button className="w-9 h-9 rounded-full bg-white/90 hover:bg-white border border-black/5 flex items-center justify-center text-gray-700 shadow-sm transition hover:scale-105 relative">
+              <Bell className="w-4 h-4" />
+              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#d8e678] border border-black/20 rounded-full" />
+            </button>
+            <div
+              onClick={openEditModal}
+              className="flex items-center gap-2 pl-2 pr-3 py-1 bg-black/5 hover:bg-black/10 border border-black/5 rounded-full cursor-pointer transition"
+            >
+              <div className="w-7 h-7 rounded-full bg-[#1f3d2b] text-[#d8e678] font-bold text-xs flex items-center justify-center border border-white/50">
+                {farmer.name.charAt(0)}
+              </div>
+              <span className="text-xs font-semibold hidden sm:inline text-[#1f3d2b]">{farmer.name}</span>
+            </div>
+          </div>
+        </header>
+
+        {/* HERO SECTION / BANNER (Hecta Drone Precision Card Style) */}
+        <div className="relative rounded-3xl overflow-hidden bg-white/75 backdrop-blur-2xl border border-white/80 shadow-[0_12px_40px_rgba(31,61,43,0.08)] p-6 sm:p-8 mb-6">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+
+            {/* Main Headline & Intro */}
+            <div className="lg:col-span-8 space-y-4">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#1f3d2b]/10 border border-[#1f3d2b]/15 text-[#1f3d2b] text-xs font-semibold">
+                <Sparkles className="w-3.5 h-3.5 text-[#3b7c4a]" />
+                <span>Smart Crop Precision Dashboard</span>
+              </div>
+
+              <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-[#16271c] leading-[1.2]">
+                Farmer Profile & Precision Farm Intelligence
+              </h1>
+
+              <p className="text-sm sm:text-base text-[#4a5f51] max-w-2xl leading-relaxed">
+                Empowering <span className="font-semibold text-black">{farmer.name}</span> with automated crop telemetry, real-time stress surveillance, drone soil scanning, and multilingual advisories.
+              </p>
+
+              {/* Action Buttons */}
+              <div className="flex flex-wrap items-center gap-3 pt-2">
+                <button
+                  onClick={openEditModal}
+                  className="px-5 py-2.5 rounded-full bg-[#1c2e22] hover:bg-[#2a4533] text-[#d8e678] font-medium text-xs sm:text-sm flex items-center gap-2 shadow-lg shadow-black/10 transition-all hover:scale-[1.02] active:scale-[0.98]"
+                >
+                  <Edit3 className="w-4 h-4" />
+                  <span>Edit Profile Details</span>
+                </button>
+
+                <button
+                  onClick={handleAddFarm}
+                  className="px-5 py-2.5 rounded-full bg-white/90 hover:bg-white text-[#1f3d2b] border border-[#1f3d2b]/20 font-medium text-xs sm:text-sm flex items-center gap-2 shadow-sm transition hover:scale-[1.02]"
+                >
+                  <Plus className="w-4 h-4 text-[#3b7c4a]" />
+                  <span>Add Another Plot / Farm</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Profile Completeness Pill / Score Card */}
+            <div className="lg:col-span-4 flex flex-col justify-center">
+              <div className="bg-gradient-to-br from-[#1c2e22] to-[#122017] text-white rounded-2xl p-5 border border-white/10 shadow-xl relative overflow-hidden group">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-[#d8e678]/10 rounded-full blur-2xl pointer-events-none" />
+
+                <div className="flex justify-between items-start mb-3">
+                  <div>
+                    <span className="text-[11px] uppercase tracking-wider text-[#9bb3a1] font-semibold">Profile Accuracy</span>
+                    <h3 className="text-3xl font-black text-white mt-0.5 tracking-tight">{farmer.profileCompleteness}%</h3>
+                  </div>
+                  <div className="w-10 h-10 rounded-xl bg-[#d8e678] text-black flex items-center justify-center font-bold shadow-md">
+                    <ShieldCheck className="w-5 h-5 text-[#1c2e22]" />
+                  </div>
+                </div>
+
+                <p className="text-xs text-[#a6bdaf] leading-snug mb-3">
+                  High completeness unlocks targeted drone scanning & state subsidy qualification.
+                </p>
+
+                {/* Progress Bar */}
+                <div className="w-full bg-white/15 h-2 rounded-full overflow-hidden p-0.5">
+                  <div
+                    className="bg-gradient-to-r from-[#8be058] to-[#d8e678] h-full rounded-full transition-all duration-1000 shadow-sm"
+                    style={{ width: `${farmer.profileCompleteness}%` }}
+                  />
+                </div>
+
+                <div className="mt-3 flex items-center justify-between text-[11px] text-[#8ea494]">
+                  <span>Village: {farmer.village}</span>
+                  <span className="text-[#d8e678] font-semibold">Verified</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          {/* Quick Metrics Bar (matching bottom badges from reference design) */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6 pt-6 border-t border-black/5">
+            <div className="bg-white/80 border border-black/5 rounded-2xl p-3.5 flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl bg-[#eef5e6] text-[#2f6b3c] flex items-center justify-center font-bold text-sm">
+                {farmer.farms.length}
+              </div>
+              <div>
+                <p className="text-[11px] text-[#7a8b6f] font-medium leading-none">Registered</p>
+                <p className="text-xs sm:text-sm font-bold text-[#1e2a22]">Total Plots</p>
+              </div>
+            </div>
+
+            <div className="bg-white/80 border border-black/5 rounded-2xl p-3.5 flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl bg-[#eef5e6] text-[#2f6b3c] flex items-center justify-center font-bold text-sm">
+                {farmer.landArea.split(" ")[0]}
+              </div>
+              <div>
+                <p className="text-[11px] text-[#7a8b6f] font-medium leading-none">Acreage</p>
+                <p className="text-xs sm:text-sm font-bold text-[#1e2a22]">{farmer.landArea}</p>
+              </div>
+            </div>
+
+            <div className="bg-white/80 border border-black/5 rounded-2xl p-3.5 flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl bg-[#fef8e7] text-[#c97a1e] flex items-center justify-center font-bold text-sm">
+                🌾
+              </div>
+              <div>
+                <p className="text-[11px] text-[#7a8b6f] font-medium leading-none">Current Crop</p>
+                <p className="text-xs sm:text-sm font-bold text-[#1e2a22]">{farmer.currentCrop}</p>
+              </div>
+            </div>
+
+            <div className="bg-white/80 border border-black/5 rounded-2xl p-3.5 flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl bg-[#fbf0ee] text-[#c0473b] flex items-center justify-center font-bold text-sm">
+                {farmer.loanDueInDays}d
+              </div>
+              <div>
+                <p className="text-[11px] text-[#7a8b6f] font-medium leading-none">Due In</p>
+                <p className="text-xs sm:text-sm font-bold text-[#1e2a22]">Credit Window</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* TWO COLUMN CONTENT GRID */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+          {/* LEFT COLUMN: WHO & WHERE (Personal & Farm info) */}
+          <div className="space-y-6">
+
+            {/* 1. PERSONAL INFORMATION CARD */}
+            <div className="bg-white/80 backdrop-blur-xl border border-white/90 rounded-3xl p-6 shadow-[0_8px_30px_rgba(0,0,0,0.04)] hover:shadow-md transition">
+              <div className="flex items-center justify-between pb-4 mb-4 border-b border-black/5">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-lg bg-[#1f3d2b]/10 text-[#1f3d2b] flex items-center justify-center">
+                    <User className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h2 className="text-base font-bold text-[#16271c]">Personal Information</h2>
+                    <p className="text-xs text-[#7a8b6f]">Primary contact and KYC record</p>
+                  </div>
+                </div>
+                <button
+                  onClick={openEditModal}
+                  className="p-1.5 hover:bg-black/5 rounded-lg text-[#2f6b3c] transition text-xs font-semibold flex items-center gap-1"
+                >
+                  <Edit3 className="w-3.5 h-3.5" />
+                  <span>Edit</span>
+                </button>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 text-xs sm:text-sm">
+                <div className="bg-white/60 p-3 rounded-2xl border border-black/5">
+                  <span className="text-[11px] text-[#7a8b6f] block font-medium">Full Name</span>
+                  <span className="font-semibold text-[#1e2a22] mt-0.5 block">{farmer.name}</span>
+                </div>
+
+                <div className="bg-white/60 p-3 rounded-2xl border border-black/5">
+                  <span className="text-[11px] text-[#7a8b6f] block font-medium">Contact Phone</span>
+                  <span className="font-semibold text-[#1e2a22] mt-0.5 block font-mono">{farmer.maskedPhone}</span>
+                </div>
+
+                <div className="bg-white/60 p-3 rounded-2xl border border-black/5">
+                  <span className="text-[11px] text-[#7a8b6f] block font-medium">Village</span>
+                  <span className="font-semibold text-[#1e2a22] mt-0.5 block">{farmer.village}</span>
+                </div>
+
+                <div className="bg-white/60 p-3 rounded-2xl border border-black/5">
+                  <span className="text-[11px] text-[#7a8b6f] block font-medium">District & State</span>
+                  <span className="font-semibold text-[#1e2a22] mt-0.5 block">{farmer.district}, {farmer.state}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* 2. MY FARMS (Multi-plot Management) */}
+            <div className="bg-white/80 backdrop-blur-xl border border-white/90 rounded-3xl p-6 shadow-[0_8px_30px_rgba(0,0,0,0.04)]">
+              <div className="flex items-center justify-between pb-4 mb-4 border-b border-black/5">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-lg bg-[#2f6b3c]/10 text-[#2f6b3c] flex items-center justify-center">
+                    <Layers className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h2 className="text-base font-bold text-[#16271c]">My Registered Farms</h2>
+                    <p className="text-xs text-[#7a8b6f]">Agricultural parcels linked to Smart Crop</p>
+                  </div>
+                </div>
+                <button
+                  onClick={handleAddFarm}
+                  className="px-3 py-1 bg-[#1f3d2b] hover:bg-[#2f6b3c] text-white text-xs font-semibold rounded-full flex items-center gap-1 transition"
+                >
+                  <Plus className="w-3 h-3" />
+                  <span>Add Farm</span>
+                </button>
+              </div>
+
+              <div className="space-y-3">
+                {farmer.farms.map((farm, idx) => (
+                  <div
+                    key={farm.id}
+                    className="p-4 rounded-2xl bg-white/70 hover:bg-white border border-black/5 shadow-sm transition flex items-center justify-between group"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-[#f2f6ee] text-[#1f3d2b] flex items-center justify-center font-bold text-sm border border-black/5">
+                        0{idx + 1}
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h4 className="font-bold text-sm text-[#1e2a22]">{farm.name}</h4>
+                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-semibold">
+                            {farm.area}
+                          </span>
+                        </div>
+                        <p className="text-xs text-[#7a8b6f] mt-0.5 flex items-center gap-1">
+                          <MapPin className="w-3 h-3" /> {farm.location} • <span className="text-[#2f6b3c] font-medium">{farm.crop}</span>
+                        </p>
+                      </div>
+                    </div>
+                    <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-black transition" />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* 3. FARM SPECIFICATIONS */}
+            <div className="bg-white/80 backdrop-blur-xl border border-white/90 rounded-3xl p-6 shadow-[0_8px_30px_rgba(0,0,0,0.04)]">
+              <div className="flex items-center gap-2.5 pb-4 mb-4 border-b border-black/5">
+                <div className="w-8 h-8 rounded-lg bg-[#d8e678]/40 text-[#1f3d2b] flex items-center justify-center">
+                  <MapPin className="w-4 h-4" />
+                </div>
+                <div>
+                  <h2 className="text-base font-bold text-[#16271c]">Land & Soil Telemetry</h2>
+                  <p className="text-xs text-[#7a8b6f]">Drone calibrated geographic parameters</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 text-xs">
+                <div className="p-3 bg-white/60 rounded-xl border border-black/5">
+                  <span className="text-[11px] text-[#7a8b6f] block">Total Operational Land</span>
+                  <span className="font-bold text-[#1e2a22] text-sm mt-0.5 block">{farmer.landArea}</span>
+                </div>
+                <div className="p-3 bg-white/60 rounded-xl border border-black/5">
+                  <span className="text-[11px] text-[#7a8b6f] block">Irrigation Access</span>
+                  <span className="font-bold text-[#1e2a22] text-sm mt-0.5 block">Canal + Tubewell</span>
+                </div>
+                <div className="p-3 bg-white/60 rounded-xl border border-black/5">
+                  <span className="text-[11px] text-[#7a8b6f] block">Soil Classification</span>
+                  <span className="font-bold text-[#1e2a22] text-sm mt-0.5 block">Alluvial Sandy Loam</span>
+                </div>
+                <div className="p-3 bg-white/60 rounded-xl border border-black/5">
+                  <span className="text-[11px] text-[#7a8b6f] block">Drone Scan Status</span>
+                  <span className="font-bold text-emerald-700 text-sm mt-0.5 flex items-center gap-1">
+                    <CheckCircle2 className="w-3.5 h-3.5" /> Calibrated
+                  </span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          {/* RIGHT COLUMN: WHAT & HOW (Crop, Loan, Language, Alerts) */}
+          <div className="space-y-6">
+
+            {/* 4. CURRENT CROP CARD (Highlight) */}
+            <div className="bg-white/85 backdrop-blur-xl border border-white/90 rounded-3xl p-6 shadow-[0_8px_30px_rgba(0,0,0,0.04)] relative overflow-hidden">
+              <div className="flex items-center justify-between pb-4 mb-4 border-b border-black/5">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-lg bg-amber-100 text-amber-900 flex items-center justify-center text-base">
+                    🌾
+                  </div>
+                  <div>
+                    <h2 className="text-base font-bold text-[#16271c]">Current Crop Lifecycle</h2>
+                    <p className="text-xs text-[#7a8b6f]">Active season telemetry</p>
+                  </div>
+                </div>
+                <span className="px-3 py-1 rounded-full bg-amber-100 text-amber-900 font-semibold text-xs flex items-center gap-1">
+                  <Activity className="w-3 h-3 text-amber-700" />
+                  {farmer.cropHealth}
+                </span>
+              </div>
+
+              <div className="bg-gradient-to-r from-[#f7f9f4] to-[#eef4ea] p-4 rounded-2xl border border-[#d2e3ca] mb-4">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h3 className="text-lg font-extrabold text-[#16271c]">{farmer.currentCrop} (Swarna Sub-1)</h3>
+                    <p className="text-xs text-[#526a57] mt-0.5">Sown: {farmer.sowingDate} • Stage: {farmer.cropStage}</p>
+                  </div>
+                  <button
+                    onClick={() => showToast("Navigating to detailed Crop Diagnostic Guide...")}
+                    className="px-3 py-1.5 bg-[#1c2e22] text-[#d8e678] text-xs font-semibold rounded-xl flex items-center gap-1 hover:bg-black transition shadow-sm"
+                  >
+                    <span>View Guide</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </button>
+                </div>
+
+                <div className="mt-4 pt-3 border-t border-black/5 grid grid-cols-3 gap-2 text-center text-xs">
+                  <div>
+                    <span className="text-[10px] text-[#7a8b6f] block">Vegetative Days</span>
+                    <span className="font-bold text-[#1e2a22]">42 Days</span>
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-[#7a8b6f] block">Moisture Index</span>
+                    <span className="font-bold text-amber-700">68% (Low)</span>
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-[#7a8b6f] block">Pest Risk</span>
+                    <span className="font-bold text-emerald-700">Low Risk</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* 5. FINANCIAL INFORMATION & DISTRESS MONITOR */}
+            <div className="bg-white/80 backdrop-blur-xl border border-white/90 rounded-3xl p-6 shadow-[0_8px_30px_rgba(0,0,0,0.04)]">
+              <div className="flex items-center justify-between pb-4 mb-4 border-b border-black/5">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-900 flex items-center justify-center">
+                    <IndianRupee className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h2 className="text-base font-bold text-[#16271c]">Financial Context & Credit</h2>
+                    <p className="text-xs text-[#7a8b6f]">KCC & Agricultural credit window</p>
+                  </div>
+                </div>
+                <span className="text-xs font-bold text-[#c97a1e] bg-amber-50 px-2.5 py-1 rounded-full border border-amber-200 flex items-center gap-1">
+                  <Clock className="w-3 h-3" /> Due in {farmer.loanDueInDays} days
+                </span>
+              </div>
+
+              <div className="p-4 bg-white/60 rounded-2xl border border-black/5 space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-xs text-[#7a8b6f]">KCC Active Balance</span>
+                  <span className="text-lg font-extrabold text-[#16271c] font-mono">{farmer.loanAmount}</span>
+                </div>
+                <div className="flex justify-between items-center text-xs">
+                  <span className="text-[#7a8b6f]">Repayment Due Date</span>
+                  <span className="font-semibold text-[#1e2a22]">{farmer.loanDueDate}</span>
+                </div>
+                <div className="pt-2 border-t border-black/5 flex items-center justify-between text-xs text-[#5a7260]">
+                  <span>Distress Shield Status:</span>
+                  <span className="text-emerald-700 font-semibold flex items-center gap-1">
+                    <CheckCircle2 className="w-3 h-3" /> Advisory Support Eligible
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* 6. LANGUAGE PREFERENCES (Multilingual Choice) */}
+            <div className="bg-white/80 backdrop-blur-xl border border-white/90 rounded-3xl p-6 shadow-[0_8px_30px_rgba(0,0,0,0.04)]">
+              <div className="flex items-center gap-2.5 pb-4 mb-4 border-b border-black/5">
+                <div className="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-900 flex items-center justify-center">
+                  <Globe className="w-4 h-4" />
+                </div>
+                <div>
+                  <h2 className="text-base font-bold text-[#16271c]">Preferred Language / ଭାଷା</h2>
+                  <p className="text-xs text-[#7a8b6f]">Instant interface & SMS translation</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-3 gap-2.5">
+                {[
+                  { code: "en", label: "English", native: "English" },
+                  { code: "hi", label: "Hindi", native: "हिंदी" },
+                  { code: "or", label: "Odia", native: "ଓଡ଼ିଆ" }
+                ].map(item => {
+                  const isSelected = farmer.language === item.code;
+                  return (
+                    <button
+                      key={item.code}
+                      onClick={() => handleLanguageChange(item.code)}
+                      className={`p-3 rounded-2xl border text-center transition-all ${isSelected
+                          ? "bg-[#1c2e22] text-[#d8e678] border-[#1c2e22] shadow-md scale-[1.02]"
+                          : "bg-white/70 hover:bg-white text-gray-700 border-black/5"
+                        }`}
+                    >
+                      <span className="text-sm font-bold block">{item.native}</span>
+                      <span className={`text-[10px] block mt-0.5 ${isSelected ? "text-[#a2c7a9]" : "text-gray-500"}`}>
+                        {item.label}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* 7. NOTIFICATION PREFERENCES */}
+            <div className="bg-white/80 backdrop-blur-xl border border-white/90 rounded-3xl p-6 shadow-[0_8px_30px_rgba(0,0,0,0.04)]">
+              <div className="flex items-center justify-between pb-4 mb-4 border-b border-black/5">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-lg bg-sky-100 text-sky-900 flex items-center justify-center">
+                    <Bell className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h2 className="text-base font-bold text-[#16271c]">Alert Channels & Notifications</h2>
+                    <p className="text-xs text-[#7a8b6f]">Select channels for automated advisories</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-2.5 text-xs">
+                {[
+                  { key: "weather", title: "Weather & Rain Alerts", desc: "Heavy rain, storm & frost warnings" },
+                  { key: "risk", title: "Pest & Crop Stress Alerts", desc: "Drone spectral pest detection" },
+                  { key: "market", title: "Mandi Price Changes", desc: "Daily district price updates" },
+                  { key: "farming", title: "Farming Calendar Reminders", desc: "Sowing, fertilizer & harvesting dates" },
+                  { key: "officer", title: "Agriculture Officer Updates", desc: "Direct messages from block officer" }
+                ].map(item => {
+                  const enabled = farmer.notifications[item.key as keyof typeof farmer.notifications];
+                  return (
+                    <div
+                      key={item.key}
+                      onClick={() => handleNotificationToggle(item.key as keyof typeof farmer.notifications)}
+                      className="p-3 bg-white/60 hover:bg-white rounded-2xl border border-black/5 flex items-center justify-between cursor-pointer transition"
+                    >
+                      <div>
+                        <span className="font-semibold text-[#1e2a22] block">{item.title}</span>
+                        <span className="text-[11px] text-[#7a8b6f]">{item.desc}</span>
+                      </div>
+                      <div className={`w-10 h-6 flex items-center rounded-full p-1 transition-colors ${enabled ? "bg-[#2f6b3c]" : "bg-gray-300"}`}>
+                        <div className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${enabled ? "translate-x-4" : "translate-x-0"}`} />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      {/* FLOATING TOAST NOTIFICATION */}
+      {toastMessage && (
+        <div className="fixed bottom-20 sm:bottom-8 left-1/2 -translate-x-1/2 z-50 bg-[#1c2e22] text-[#d8e678] px-5 py-2.5 rounded-full shadow-2xl border border-white/20 flex items-center gap-2 text-xs font-semibold animate-in fade-in slide-in-from-bottom-4 duration-200">
+          <Check className="w-4 h-4 text-[#8be058]" />
+          <span>{toastMessage}</span>
+        </div>
+      )}
+
+      {/* EDIT PROFILE MODAL / BOTTOM SHEET */}
+      {isEditModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-white/80 relative space-y-4">
+
+            <div className="flex items-center justify-between pb-3 border-b border-black/10">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-xl bg-[#1f3d2b] text-[#d8e678] flex items-center justify-center">
+                  <Edit3 className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-[#16271c]">Edit Profile Details</h3>
+                  <p className="text-xs text-[#7a8b6f]">Update your personal & contact records</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setIsEditModalOpen(false)}
+                className="w-8 h-8 rounded-full hover:bg-gray-100 flex items-center justify-center text-gray-500 transition"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveProfile} className="space-y-3.5 text-xs">
+              <div>
+                <label className="block font-semibold text-gray-700 mb-1">Full Name</label>
+                <input
+                  type="text"
+                  value={editFormData.name}
+                  onChange={(e) => setEditFormData(prev => ({ ...prev, name: e.target.value }))}
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#2f6b3c]"
+                  placeholder="Enter full name"
+                />
+                {errors.name && <p className="text-red-500 text-[11px] mt-1">{errors.name}</p>}
+              </div>
+
+              <div>
+                <label className="block font-semibold text-gray-700 mb-1">Phone Number (10 digits)</label>
+                <input
+                  type="text"
+                  value={editFormData.phone}
+                  onChange={(e) => setEditFormData(prev => ({ ...prev, phone: e.target.value }))}
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#2f6b3c]"
+                  placeholder="+91 9XXXXXXXXX"
+                />
+                {errors.phone && <p className="text-red-500 text-[11px] mt-1">{errors.phone}</p>}
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-semibold text-gray-700 mb-1">Village</label>
+                  <input
+                    type="text"
+                    value={editFormData.village}
+                    onChange={(e) => setEditFormData(prev => ({ ...prev, village: e.target.value }))}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#2f6b3c]"
+                    placeholder="Village"
+                  />
+                  {errors.village && <p className="text-red-500 text-[11px] mt-1">{errors.village}</p>}
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-gray-700 mb-1">District</label>
+                  <input
+                    type="text"
+                    value={editFormData.district}
+                    onChange={(e) => setEditFormData(prev => ({ ...prev, district: e.target.value }))}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#2f6b3c]"
+                    placeholder="District"
+                  />
+                  {errors.district && <p className="text-red-500 text-[11px] mt-1">{errors.district}</p>}
+                </div>
+              </div>
+
+              <div>
+                <label className="block font-semibold text-gray-700 mb-1">Default Language</label>
+                <select
+                  value={editFormData.language}
+                  onChange={(e) => setEditFormData(prev => ({ ...prev, language: e.target.value }))}
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#2f6b3c]"
+                >
+                  <option value="or">ଓଡ଼ିଆ (Odia)</option>
+                  <option value="hi">हिंदी (Hindi)</option>
+                  <option value="en">English</option>
+                </select>
+              </div>
+
+              <div className="flex items-center justify-end gap-2 pt-4 border-t border-black/10">
+                <button
+                  type="button"
+                  onClick={() => setIsEditModalOpen(false)}
+                  className="px-4 py-2 rounded-xl text-gray-600 hover:bg-gray-100 font-semibold"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 rounded-xl bg-[#1c2e22] hover:bg-[#2a4533] text-[#d8e678] font-bold shadow-md transition"
+                >
+                  Save Changes
+                </button>
+              </div>
+            </form>
+
+          </div>
+        </div>
+      )}
+
+      {/* MOBILE BOTTOM NAVIGATION BAR */}
+      <div className="fixed bottom-0 inset-x-0 bg-white/90 backdrop-blur-xl border-t border-black/10 py-2 px-6 flex justify-around items-center z-40 md:hidden shadow-lg">
+        <Link href="/" className="flex flex-col items-center gap-1 text-gray-500 hover:text-[#1f3d2b]">
+          <Home className="w-5 h-5" />
+          <span className="text-[10px] font-medium">Home</span>
+        </Link>
+        <Link href="/" className="flex flex-col items-center gap-1 text-gray-500 hover:text-[#1f3d2b]">
+          <Sprout className="w-5 h-5" />
+          <span className="text-[10px] font-medium">Crop</span>
+        </Link>
+        <Link href="/insurance" className="flex flex-col items-center gap-1 text-gray-500 hover:text-[#1f3d2b]">
+          <ShieldCheck className="w-5 h-5" />
+          <span className="text-[10px] font-medium">Insurance</span>
+        </Link>
+        <Link href="/market" className="flex flex-col items-center gap-1 text-gray-500 hover:text-[#1f3d2b]">
+          <Store className="w-5 h-5" />
+          <span className="text-[10px] font-medium">Market</span>
+        </Link>
+        <Link href="/farmer-profile" className="flex flex-col items-center gap-1 text-[#1f3d2b] font-bold">
+          <User className="w-5 h-5 text-[#2f6b3c]" />
+          <span className="text-[10px]">Profile</span>
+        </Link>
+      </div>
+
+    </div>
+  );
+}
