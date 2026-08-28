@@ -16,7 +16,7 @@ const SignInPage = () => {
       <div className="absolute inset-0 bg-black/30 pointer-events-none" />
 
       {/* Auth form — left side, transparent, with huge padding */}
-      <div className="relative z-10 w-full md:w-auto md:min-w-[360px] px-8 py-12 flex flex-col justify-center min-h-screen" style={{marginLeft:"320px", padding:"0px 10px"}}>
+      <div className="relative z-10 w-full md:w-auto md:min-w-[360px] px-8 py-12 flex flex-col justify-center min-h-screen" style={{ marginLeft: "320px", padding: "0px 10px" }}>
         <SignIn
           appearance={{
             elements: {
@@ -37,7 +37,7 @@ const SignInPage = () => {
               footerActionText: "text-zinc-300",
               footerActionLink: "text-emerald-400 hover:text-emerald-300",
             },
-            ...( {
+            ...({
               layout: {
                 socialButtonsPlacement: "bottom",
                 socialButtonsVariant: "blockButton",
