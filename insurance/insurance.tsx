@@ -18,7 +18,7 @@ export default function InsurancePage() {
   const [lang, setLang] = useState<"EN" | "HI" | "OR">("EN");
   const [status, setStatus] = useState<InsuranceState>("NOT_REGISTERED");
   const [farmer, setFarmer] = useState<FarmerProfile>(mockFarmer);
-  const [documents, setDocuments] = useState<DocumentItem[]>(initialDocuments);
+  const [documents] = useState<DocumentItem[]>(initialDocuments);
   const [activeView, setActiveView] = useState<"dashboard" | "stepper">("dashboard");
   const [isEditingParcel, setIsEditingParcel] = useState(false);
   const [showRulesModal, setShowRulesModal] = useState(false);

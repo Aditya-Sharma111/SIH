@@ -22,7 +22,6 @@ import {
   Search,
   X,
   Home,
-  BarChart3,
   Store,
   Check
 } from "lucide-react";
@@ -61,7 +60,6 @@ export default function FarmerProfilePage() {
     }
   });
 
-  const [activeTab, setActiveTab] = useState("Home");
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 

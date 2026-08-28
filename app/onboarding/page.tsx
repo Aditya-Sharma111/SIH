@@ -66,7 +66,7 @@ export default function OnboardingPage() {
             loan_amount: parseFloat(farmerForm.loan_amount) || 0,
           })
         });
-        const farmerData = await farmerRes.json();
+        await farmerRes.json();
 
         // 2. Create Crop in DB
         if (farmerForm.crop_name) {

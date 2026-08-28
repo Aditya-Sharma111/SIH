@@ -18,7 +18,7 @@ export interface UserProfile {
   created_at?: string;
 }
 
-let memoryProfiles: Map<string, UserProfile> = new Map([
+const memoryProfiles: Map<string, UserProfile> = new Map([
   [
     'user-default',
     {
