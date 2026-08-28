@@ -1,4 +1,4 @@
-import FarmerDashboard from "@/deshboard/deshboard";
+import FarmerDashboard from "@/farmer deshboard/deshboard";
 
 export const metadata = {
   title: "Smart Crop | Farmer Dashboard",
@@ -8,4 +8,3 @@ export const metadata = {
 export default function Home() {
   return <FarmerDashboard />;
 }
-
