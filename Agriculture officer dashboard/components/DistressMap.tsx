@@ -1,7 +1,5 @@
 "use client";
 
-import Image from "next/image";
-import heroBackground from "../img/hero-background.jpeg";
 
 export default function DistressMap() {
   return (

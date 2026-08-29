@@ -1,8 +1,6 @@
 "use client";
 
-import Image from "next/image";
-import heroBackground from "../img/hero-background.jpeg";
-import { Search, Bell, User, Menu } from "lucide-react";
+import { Search, Bell, Menu } from "lucide-react";
 
 export default function Header({ onToggleSidebar }: { onToggleSidebar: () => void }) {
   return (

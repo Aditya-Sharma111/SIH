@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from 'react';
-import Image from 'next/image';
 import { mockFarmers } from '../data/farmers.mock';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
