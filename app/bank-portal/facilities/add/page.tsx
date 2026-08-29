@@ -1,15 +1,10 @@
-import { Suspense } from 'react';
-import AddFacilityPage from '@/Bank Portal/facilities/AddFacilityPage';
+import AddFacilityPage from "@/Bank Portal/facilities/AddFacilityPage";
 
 export const metadata = {
-  title: 'Add / Edit Facility | Bank Partner Portal',
-  description: 'Publish and manage agricultural finance products.',
+  title: "Smart Crop | Add Financial Facility",
+  description: "Create New Agricultural Credit Scheme or Loan Product.",
 };
 
-export default function AddFacilityRoute() {
-  return (
-    <Suspense fallback={<div style={{ padding: '2rem', textAlign: 'center' }}>Loading form...</div>}>
-      <AddFacilityPage />
-    </Suspense>
-  );
+export default function Page() {
+  return <AddFacilityPage />;
 }

@@ -1,10 +1,10 @@
-import FinancialSupportListPage from '@/Financial Support/list/FinancialSupportListPage';
+import FinancialSupportListPage from "@/Financial Support/list/FinancialSupportListPage";
 
 export const metadata = {
-  title: 'Agricultural Financial Facilities | Smart Crop',
-  description: 'Explore agricultural credit and financial schemes from verified banks.',
+  title: "Smart Crop | Agricultural Financial Facilities",
+  description: "Kisan Credit Card (KCC), Crop Loans, Interest Subvention, and Machinery Credit.",
 };
 
-export default function FinancialSupportPage() {
+export default function Page() {
   return <FinancialSupportListPage />;
 }

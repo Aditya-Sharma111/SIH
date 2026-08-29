@@ -1,15 +1,10 @@
-import { Suspense } from 'react';
-import AcknowledgementPage from '@/Financial Support/acknowledgement/AcknowledgementPage';
+import AcknowledgementPage from "@/Financial Support/acknowledgement/AcknowledgementPage";
 
 export const metadata = {
-  title: 'Acknowledgement | Smart Crop Financial Support',
-  description: 'External redirect confirmation for bank application portal.',
+  title: "Smart Crop | Loan Application Acknowledgement",
+  description: "Official Submission Token, Application Status Tracking & Next Steps.",
 };
 
-export default function AcknowledgementRoute() {
-  return (
-    <Suspense fallback={<div style={{ padding: '2rem', textAlign: 'center' }}>Loading acknowledgement...</div>}>
-      <AcknowledgementPage />
-    </Suspense>
-  );
+export default function Page() {
+  return <AcknowledgementPage />;
 }

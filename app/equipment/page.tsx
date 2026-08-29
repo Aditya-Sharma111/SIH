@@ -1,10 +1,10 @@
-import EquipmentPage from '@/Equipment page Dashboard/Equipment page';
+import EquipmentPage from "@/Equipment page Dashboard/Equipment page";
 
 export const metadata = {
-  title: 'Equipment Rental Directory | Smart Crop',
-  description: 'Explore verified agricultural machinery available for rent with transparent rates and instant booking.',
+  title: "Smart Crop | Custom Hiring Center (CHC) Equipment Hub",
+  description: "Subsidized Machinery Rental, Tractors, Harvesters, Spraying Drones & Solar Pumps.",
 };
 
-export default function EquipmentRoute() {
+export default function Page() {
   return <EquipmentPage />;
 }

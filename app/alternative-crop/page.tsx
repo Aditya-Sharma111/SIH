@@ -1,10 +1,10 @@
-import AlternativeCrop from "@/Alternative crop/Alternative crop";
+import AlternativeCropPage from "@/Alternative crop/Alternative crop";
 
 export const metadata = {
-  title: "Alternative Crop Recommendations | Smart Crop",
-  description: "Alternative crop suitability analysis based on soil, season, and market demand.",
+  title: "Smart Crop | Climate-Smart Alternative Crop Recommendations",
+  description: "AI-Generated Drought-Tolerant Crop Suggestions, Water Savings Index, and Guaranteed MSP.",
 };
 
-export default function AlternativeCropRoute() {
-  return <AlternativeCrop />;
+export default function Page() {
+  return <AlternativeCropPage />;
 }

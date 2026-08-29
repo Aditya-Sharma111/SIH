@@ -1,15 +1,10 @@
-import { Suspense } from 'react';
-import FacilityDetailPage from '@/Financial Support/detail/FacilityDetailPage';
+import FacilityDetailPage from "@/Financial Support/detail/FacilityDetailPage";
 
 export const metadata = {
-  title: 'Facility Details | Smart Crop Financial Support',
-  description: 'Detailed information and terms for agricultural loan facility.',
+  title: "Smart Crop | Credit Facility Terms & Application",
+  description: "Comprehensive Loan Terms, Subvention Schedule, and Instant Application.",
 };
 
-export default function DetailRoute() {
-  return (
-    <Suspense fallback={<div style={{ padding: '2rem', textAlign: 'center' }}>Loading facility details...</div>}>
-      <FacilityDetailPage />
-    </Suspense>
-  );
+export default function Page() {
+  return <FacilityDetailPage />;
 }

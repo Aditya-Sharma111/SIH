@@ -1,1 +1,1 @@
-export { default } from "@/Agriculture officer dashboard/Agriculture officer dashboard";
+export { default, metadata } from "@/app/agriculture-officer-dashboard/page";

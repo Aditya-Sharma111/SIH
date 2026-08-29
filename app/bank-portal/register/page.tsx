@@ -1,10 +1,10 @@
-import BankRegisterPage from '@/Bank Portal/register/BankRegisterPage';
+import BankRegisterPage from "@/Bank Portal/register/BankRegisterPage";
 
 export const metadata = {
-  title: 'Bank Registration & Profile | Bank Partner Portal',
-  description: 'Register and manage bank institutional credentials.',
+  title: "Smart Crop | Bank Partner Registration",
+  description: "Branch Authorization, Nodal Officer Credentials, and Banking Institution Onboarding.",
 };
 
-export default function RegisterRoute() {
+export default function Page() {
   return <BankRegisterPage />;
 }

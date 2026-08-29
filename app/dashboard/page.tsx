@@ -1,10 +1,10 @@
-import FarmerDashboard from "@/deshboard/deshboard";
+import FarmerDashboard from "@/farmer deshboard/deshboard";
 
 export const metadata = {
-  title: "Farmer Dashboard | Smart Crop",
-  description: "Comprehensive agricultural overview, crop health, alerts, and farm telemetry.",
+  title: "Smart Crop | Farmer Dashboard",
+  description: "AI-Powered Farm Intelligence, Crop Advisory, Mandi Prices and Financial Support.",
 };
 
-export default function DashboardRoute() {
+export default function DashboardPage() {
   return <FarmerDashboard />;
 }

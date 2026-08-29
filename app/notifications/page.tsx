@@ -1,8 +1,10 @@
-'use client';
+import NotificationsPage from "@/notification page/index";
 
-import NotificationPage from '../../notification page/index';
+export const metadata = {
+  title: "Smart Crop | Agricultural Notification Center",
+  description: "Real-time Weather Warnings, Mandi Surge Alerts & Scheme Deadline Notifications.",
+};
 
 export default function Page() {
-  return <NotificationPage />;
+  return <NotificationsPage />;
 }
-

@@ -1,4 +1,4 @@
-import FarmerDashboard from "@/deshboard/deshboard";
+import FarmerDashboard from "@/farmer deshboard/deshboard";
 
 export const metadata = {
   title: "Smart Crop | Farmer Dashboard",

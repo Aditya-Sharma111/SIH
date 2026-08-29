@@ -1,10 +1,10 @@
-import CropMonitoringPage from '@/Crop Monitoring page/Crop Monitoring page';
+import CropMonitoringPage from "@/Crop Monitoring page/Crop Monitoring page";
 
 export const metadata = {
-  title: 'Real-Time Crop Health & IoT Telemetry | Smart Crop',
-  description: 'Automated crop telemetry, real-time stress surveillance, drone soil scanning, and AI agronomy.',
+  title: "Smart Crop | Crop Monitoring & Field Health",
+  description: "AI Agronomist, NDVI Satellite Insights, Soil Sensors, and Daily Farm Log.",
 };
 
-export default function CropMonitoringRoute() {
+export default function Page() {
   return <CropMonitoringPage />;
 }

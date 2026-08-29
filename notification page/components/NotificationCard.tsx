@@ -3,7 +3,6 @@ import Link from 'next/link';
 import { AlertTriangle, CloudRain, Sprout, TrendingDown, Landmark, ShieldCheck, UserCheck } from 'lucide-react';
 import { NotificationItem } from '../types';
 import { PriorityBadge } from './PriorityBadge';
-import { ActionButton } from './ActionButton';
 
 interface NotificationCardProps {
   notification: NotificationItem;
@@ -25,7 +24,7 @@ const CategoryIcon = ({ category }: { category: string }) => {
 };
 
 export const NotificationCard: React.FC<NotificationCardProps> = ({ notification, onClick }) => {
-  const { category, priority, title, description, timestamp, ctaLabel, ctaHref, isRead } = notification;
+  const { category, priority, title, description, timestamp, ctaLabel, isRead } = notification;
 
   // Format time ago (very basic approximation)
   const timeAgo = (dateStr: string) => {

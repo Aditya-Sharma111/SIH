@@ -1,10 +1,10 @@
 import OfficerDashboardPage from "@/Agriculture officer dashboard/Agriculture officer dashboard";
 
 export const metadata = {
-  title: "Agriculture Officer Command Center | Smart Crop",
-  description: "Spatial distress telemetry, priority farmer surveillance, and field intervention triage.",
+  title: "Smart Crop | Agriculture Officer Dashboard",
+  description: "AI-Powered Regional Distress Map, High-Risk Triage, Analytics & Interventions.",
 };
 
-export default function AgricultureOfficerDashboardRoute() {
+export default function Page() {
   return <OfficerDashboardPage />;
 }

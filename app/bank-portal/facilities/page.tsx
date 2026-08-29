@@ -1,10 +1,10 @@
-import ManageFacilitiesPage from '@/Bank Portal/facilities/ManageFacilitiesPage';
+import ManageFacilitiesPage from "@/Bank Portal/facilities/ManageFacilitiesPage";
 
 export const metadata = {
-  title: 'Facilities | Bank Partner Portal',
-  description: 'Manage listed financial facilities.',
+  title: "Smart Crop | Manage Financial Facilities",
+  description: "Bank Partner Credit Products, Allocation Limits, and Terms Management.",
 };
 
-export default function FacilitiesRoute() {
+export default function Page() {
   return <ManageFacilitiesPage />;
 }

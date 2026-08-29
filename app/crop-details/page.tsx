@@ -1,10 +1,10 @@
-import CropDetails from "@/Crop Details/Crop Details";
+import CropDetailsPage from "@/Crop Details/Crop Details";
 
 export const metadata = {
-  title: "Crop Details & Sowing Guide | Smart Crop",
-  description: "Comprehensive agronomic parameters, soil requirements, and yield benchmarks.",
+  title: "Smart Crop | Crop Details & Sowing Guide",
+  description: "Detailed Agronomic Parameters, Stage Lifecycle, and Cultivation Protocols.",
 };
 
-export default function CropDetailsRoute() {
-  return <CropDetails />;
+export default function Page() {
+  return <CropDetailsPage />;
 }

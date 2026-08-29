@@ -1,7 +1,5 @@
 "use client";
 
-import Image from "next/image";
-import heroBackground from "../img/hero-background.jpeg";
 // Placeholder icons – replace with actual Lucide imports as needed
 import { Home, AlertTriangle, MapPin, BarChart2, Bell, Database, Clock, Settings, Globe } from "lucide-react";
 
@@ -36,10 +34,11 @@ export default function Sidebar({ isOpen }: { isOpen: boolean }) {
             <a
               key={item.name}
               href={item.href ?? "#"}
-              className={`flex items-center gap-2 md:gap-3 py-2 px-3 md:py-2.5 md:px-4 rounded-xl text-xs md:text-sm font-medium transition-all whitespace-nowrap ${isActive
+              className={`flex items-center gap-2 md:gap-3 py-2 px-3 md:py-2.5 md:px-4 rounded-xl text-xs md:text-sm font-medium transition-all whitespace-nowrap ${
+                isActive
                   ? "bg-[#CFE362] text-[#1A1A1A] font-semibold shadow-sm"
-                  : "text-[#4A4A4A] hover:bg-white/40 hover:text-[#1A1A1A]"}
-                }`}
+                  : "text-[#4A4A4A] hover:bg-white/40 hover:text-[#1A1A1A]"
+              }`}
             >
               <Icon className="w-4 h-4 md:w-5 md:h-5 shrink-0" />
               <span>{item.name}</span>
