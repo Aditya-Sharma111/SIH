@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import ManageFacilitiesPage from '@/Bank Portal/facilities/ManageFacilitiesPage';
 
 export const metadata = {
@@ -6,5 +7,9 @@ export const metadata = {
 };
 
 export default function ManageFacilitiesRoute() {
-  return <ManageFacilitiesPage />;
+  return (
+    <Suspense fallback={<div style={{ padding: '2rem', textAlign: 'center' }}>Loading facilities...</div>}>
+      <ManageFacilitiesPage />
+    </Suspense>
+  );
 }

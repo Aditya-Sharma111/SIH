@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import BankDashboardPage from '@/Bank Portal/dashboard/BankDashboardPage';
 
 export const metadata = {
@@ -6,5 +7,9 @@ export const metadata = {
 };
 
 export default function DashboardRoute() {
-  return <BankDashboardPage />;
+  return (
+    <Suspense fallback={<div style={{ padding: '2rem', textAlign: 'center' }}>Loading dashboard...</div>}>
+      <BankDashboardPage />
+    </Suspense>
+  );
 }
