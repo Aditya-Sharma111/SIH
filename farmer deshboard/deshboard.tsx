@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { RadialBarChart, RadialBar, AreaChart, Area, ResponsiveContainer } from 'recharts';
 import { 
@@ -19,6 +20,7 @@ interface FarmerLocation {
 }
 
 export default function SmartCropDashboard() {
+  const router = useRouter();
   const socketRef = useRef<Socket | null>(null);
   const [isSharingLocation, setIsSharingLocation] = useState(false);
   const [farmerLocations, setFarmerLocations] = useState<FarmerLocation[]>([]);
@@ -286,6 +288,7 @@ export default function SmartCropDashboard() {
 
             {/* Notification Bell */}
             <button
+              onClick={() => router.push('/notification')}
               onMouseEnter={() => setHoveredAction('bell')}
               onMouseLeave={() => setHoveredAction(null)}
               className={`h-11 rounded-full flex items-center justify-center bg-white/80 hover:bg-white border border-black/6 hover:border-black/15 transition-all duration-300 shadow-sm relative cursor-pointer group ${

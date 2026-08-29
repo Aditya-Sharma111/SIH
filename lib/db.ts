@@ -8,7 +8,7 @@ const dbConfig = {
   host: process.env.DB_HOST || 'sih-mysql.cley86o8g8vx.eu-north-1.rds.amazonaws.com',
   port: Number(process.env.DB_PORT) || 3306,
   user: process.env.DB_USER || 'admin',
-  password: process.env.DB_PASSWORD || 'Suguda123',
+  password: process.env.DB_PASSWORD || 'kFjzqqPYEQb2awh',
   database: process.env.DB_NAME || 'sih',
   waitForConnections: true,
   connectionLimit: 10,
@@ -17,7 +17,7 @@ const dbConfig = {
   queueLimit: 0,
   enableKeepAlive: true,
   keepAliveInitialDelay: 10000,
-  connectTimeout: 5000,
+  connectTimeout: 20000,
   ssl: {
     rejectUnauthorized: false
   }
@@ -50,14 +50,30 @@ export async function initDatabase(): Promise<boolean> {
       await connection.query(`
         CREATE TABLE IF NOT EXISTS users (
           id VARCHAR(100) PRIMARY KEY,
-          email VARCHAR(255) UNIQUE,
+          email VARCHAR(255),
           name VARCHAR(255),
           phone VARCHAR(32),
+          username VARCHAR(255),
+          password VARCHAR(255),
           role VARCHAR(50) NOT NULL DEFAULT 'farmer',
+          account_status VARCHAR(50) NOT NULL DEFAULT 'active',
           profile_id VARCHAR(100),
+          metadata JSON,
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
       `);
+
+      // Seed default accounts in RDS if not already present
+      const [existingUsers]: any = await connection.query('SELECT COUNT(*) as count FROM users;');
+      if (existingUsers[0]?.count === 0) {
+        await connection.query(`
+          INSERT INTO users (id, email, name, phone, username, password, role, account_status)
+          VALUES 
+            ('usr_farmer_demo_1', 'farmer@smartcrop.in', 'Ramesh Kumar Patel', '9876543210', 'farmer1', 'Password123!', 'farmer', 'active'),
+            ('usr_admin_demo_1', 'admin@agri.gov.in', 'Dr. Anil Verma (Agronomy Officer)', '9876543211', 'admin1', 'Password123!', 'administrator', 'active'),
+            ('usr_bank_demo_1', 'bank@sbi.co.in', 'SBI Agri Credit Hub', '9876543212', 'bank1', 'Password123!', 'bank', 'active');
+        `);
+      }
 
       // 2. Farmers Profile table
       await connection.query(`
