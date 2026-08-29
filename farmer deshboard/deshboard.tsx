@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { io, Socket } from 'socket.io-client';
 import bgImage from './assets/bg.png';
+import { getDashboardData, type DashboardData } from './actions';
 
 interface FarmerLocation {
   farmerId: string;
@@ -22,6 +23,10 @@ export default function SmartCropDashboard() {
   const socketRef = useRef<Socket | null>(null);
   const [isSharingLocation, setIsSharingLocation] = useState(false);
   const [farmerLocations, setFarmerLocations] = useState<FarmerLocation[]>([]);
+
+  // Backend Data State
+  const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Navigation State
   const [activeNav, setActiveNav] = useState('home');
@@ -83,6 +88,18 @@ export default function SmartCropDashboard() {
       newSocket.disconnect();
       socketRef.current = null;
     };
+  }, []);
+
+  useEffect(() => {
+    async function fetchData() {
+      setIsLoading(true);
+      const data = await getDashboardData('f1');
+      if (data) {
+        setDashboardData(data);
+      }
+      setIsLoading(false);
+    }
+    fetchData();
   }, []);
 
   useEffect(() => {
@@ -543,12 +560,12 @@ export default function SmartCropDashboard() {
                 </div>
                 <div>
                   <p className="text-lg font-semibold text-[#1B1E19]">Risk Level</p>
-                  <p className="text-sm font-semibold text-red-600">High Risk</p>
+                  <p className="text-sm font-semibold text-red-600">{isLoading ? '...' : dashboardData?.risk?.level || 'High Risk'}</p>
                 </div>
               </div>
               <div>
-                <div className="text-6xl md:text-7xl font-bold text-[#1B1E19] tracking-tight leading-none mb-3" style={{ fontVariantNumeric: 'tabular-nums' }}>81<span className="text-4xl text-[#6B6F63]">/100</span></div>
-                <p className="text-base font-medium text-[#6B6F63]">Rainfall 35% below normal</p>
+                <div className="text-6xl md:text-7xl font-bold text-[#1B1E19] tracking-tight leading-none mb-3" style={{ fontVariantNumeric: 'tabular-nums' }}>{isLoading ? '...' : dashboardData?.risk?.score || 81}<span className="text-4xl text-[#6B6F63]">/100</span></div>
+                <p className="text-base font-medium text-[#6B6F63]">{isLoading ? '...' : (dashboardData?.risk?.reasons?.[0] || 'Rainfall 35% below normal')}</p>
               </div>
             </div>
           </motion.div>
@@ -581,21 +598,21 @@ export default function SmartCropDashboard() {
                 <div className="flex items-center gap-3.5 mb-6">
                   <div className="w-13 h-13 rounded-full p-0.5 bg-linear-to-tr from-[#D6F24B] to-emerald-400 shadow-[0_0_16px_rgba(214,242,75,0.6)] overflow-hidden">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src="https://ui-avatars.com/api/?name=Ramesh+Singh&background=D6F24B&color=1B1E19" alt="Ramesh" className="w-full h-full object-cover rounded-full" />
+                    <img src={`https://ui-avatars.com/api/?name=${encodeURIComponent(dashboardData?.farmer?.name || 'Ramesh Singh')}&background=D6F24B&color=1B1E19`} alt="Profile" className="w-full h-full object-cover rounded-full" />
                   </div>
                   <div>
-                    <h2 className="text-xl font-semibold text-[#1B1E19]">Ramesh Singh</h2>
-                    <div className="text-sm text-[#6B6F63] flex items-center gap-1"><MapPin size={13} className="text-[#E4572E]" /> Mayurbhanj, Odisha</div>
+                    <h2 className="text-xl font-semibold text-[#1B1E19]">{isLoading ? 'Loading...' : dashboardData?.farmer?.name || 'Ramesh Singh'}</h2>
+                    <div className="text-sm text-[#6B6F63] flex items-center gap-1"><MapPin size={13} className="text-[#E4572E]" /> {isLoading ? '...' : `${dashboardData?.farmer?.village}, ${dashboardData?.farmer?.district}`}</div>
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-y-5 gap-x-4">
                   <div className="bg-black/4 p-2.5 rounded-xl border border-black/6">
                     <div className="text-[11px] font-semibold tracking-wide uppercase text-[#1B1E19]/60 mb-1">LAND SIZE</div>
-                    <div className="font-semibold text-[#1B1E19]">2.5 Acres</div>
+                    <div className="font-semibold text-[#1B1E19]">{isLoading ? '...' : `${dashboardData?.farmer?.landArea} Acres`}</div>
                   </div>
                   <div className="bg-black/4 p-2.5 rounded-xl border border-black/6">
                     <div className="text-[11px] font-semibold tracking-wide uppercase text-[#1B1E19]/60 mb-1">CROP</div>
-                    <div className="font-semibold text-[#1B1E19]">Paddy (Rice)</div>
+                    <div className="font-semibold text-[#1B1E19]">{isLoading ? '...' : dashboardData?.crop?.name || 'Paddy (Rice)'}</div>
                   </div>
                   <div className="bg-black/4 p-2.5 rounded-xl border border-black/6">
                     <div className="text-[11px] font-semibold tracking-wide uppercase text-[#1B1E19]/60 mb-1">SEASON</div>
@@ -666,7 +683,7 @@ export default function SmartCropDashboard() {
                 <div className="mb-6 bg-linear-to-br from-[#EAF7B8]/40 via-lime-500/10 to-transparent rounded-2xl p-4 border border-[#D6F24B]/40 shadow-sm">
                   <div className="flex justify-between items-end mb-3">
                     <div className="text-sm font-semibold text-[#1B1E19]">NDVI Trend</div>
-                    <div className="text-sm font-bold text-[#E4572E]">↓18% vs 30-day avg</div>
+                    <div className="text-sm font-bold text-[#E4572E]">{isLoading ? '...' : (dashboardData?.health?.ndviTrend && dashboardData.health.ndviTrend < 0 ? `↓${Math.abs(dashboardData.health.ndviTrend)}%` : `↑${dashboardData?.health?.ndviTrend || 0}%`)} vs 30-day avg</div>
                   </div>
                   <div className="h-16 w-full">
                     <ResponsiveContainer width="100%" height="100%">
@@ -702,8 +719,8 @@ export default function SmartCropDashboard() {
                       </div>
                     </div>
                     <div>
-                      <div className="text-sm font-semibold text-[#1B1E19]">Overcast, no rain</div>
-                      <div className="text-xs text-[#6B6F63] mt-0.5">Expected for next 5 days</div>
+                      <div className="text-sm font-semibold text-[#1B1E19]">{isLoading ? '...' : (dashboardData?.health?.rainfall && dashboardData.health.rainfall > 0 ? `Rain expected (${dashboardData.health.rainfall}mm)` : `Overcast, no rain`)}</div>
+                      <div className="text-xs text-[#6B6F63] mt-0.5">{isLoading ? '...' : `Temp: ${dashboardData?.health?.temperature || '--'}°C`}</div>
                     </div>
                   </div>
 
@@ -737,7 +754,7 @@ export default function SmartCropDashboard() {
                 <h2 className="text-[28px] font-semibold tracking-tight text-[#1B1E19]">Distress Risk Intelligence</h2>
                 <div className="flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-linear-to-r from-red-500/15 to-[#E4572E]/15 text-[#E4572E] text-[11px] font-extrabold tracking-wider border border-[#E4572E]/40 uppercase shadow-sm">
                   <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-                  <span>HIGH RISK</span>
+                  <span>{isLoading ? '...' : dashboardData?.risk?.level?.toUpperCase() || 'HIGH RISK'}</span>
                 </div>
               </div>
 
@@ -750,7 +767,7 @@ export default function SmartCropDashboard() {
                         cx="50%" cy="50%"
                         innerRadius="75%" outerRadius="100%"
                         barSize={20}
-                        data={[{ name: 'Risk', value: 81, fill: '#E4572E' }]}
+                        data={[{ name: 'Risk', value: isLoading ? 0 : dashboardData?.risk?.score || 81, fill: '#E4572E' }]}
                         startAngle={180} endAngle={0}
                       >
                         <RadialBar background={{ fill: 'rgba(0,0,0,0.06)' }} dataKey="value" cornerRadius={10} />
@@ -758,7 +775,7 @@ export default function SmartCropDashboard() {
                     </ResponsiveContainer>
                   </div>
                   <div className="absolute top-[40%] flex flex-col items-center">
-                    <span className="text-[74px] font-bold leading-none tracking-tight text-[#1B1E19]" style={{ fontVariantNumeric: 'tabular-nums' }}>81</span>
+                    <span className="text-[74px] font-bold leading-none tracking-tight text-[#1B1E19]" style={{ fontVariantNumeric: 'tabular-nums' }}>{isLoading ? '...' : dashboardData?.risk?.score || 81}</span>
                     <span className="text-[#6B6F63] text-sm mt-1 font-semibold">/ 100</span>
                   </div>
 
@@ -846,8 +863,8 @@ export default function SmartCropDashboard() {
                   </div>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-[#1B1E19] text-[15px]">Switch irrigation</h3>
-                  <div className="text-[13px] text-[#6B6F63] mt-0.5">Update schedule based on soil</div>
+                  <h3 className="font-semibold text-[#1B1E19] text-[15px]">{isLoading ? '...' : dashboardData?.advisories?.[0]?.action || 'Switch irrigation'}</h3>
+                  <div className="text-[13px] text-[#6B6F63] mt-0.5">{isLoading ? '...' : dashboardData?.advisories?.[0]?.message || 'Update schedule based on soil'}</div>
                 </div>
               </div>
               <ChevronRight className="text-black/30 group-hover:text-black group-hover:translate-x-1 transition-all" />
@@ -872,8 +889,8 @@ export default function SmartCropDashboard() {
                   </div>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-[#1B1E19] text-[15px]">Apply insurance</h3>
-                  <div className="text-[13px] text-[#6B6F63] mt-0.5">High risk threshold crossed</div>
+                  <h3 className="font-semibold text-[#1B1E19] text-[15px]">{isLoading ? '...' : dashboardData?.advisories?.[1]?.action || 'Apply insurance'}</h3>
+                  <div className="text-[13px] text-[#6B6F63] mt-0.5">{isLoading ? '...' : dashboardData?.advisories?.[1]?.message || 'High risk threshold crossed'}</div>
                 </div>
               </div>
               <ChevronRight className="text-black/30 group-hover:text-black group-hover:translate-x-1 transition-all" />
@@ -898,8 +915,8 @@ export default function SmartCropDashboard() {
                   </div>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-[#1B1E19] text-[15px]">Alternative crop</h3>
-                  <div className="text-[13px] text-[#6B6F63] mt-0.5">Groundnut (88% suitable)</div>
+                  <h3 className="font-semibold text-[#1B1E19] text-[15px]">{isLoading ? '...' : dashboardData?.advisories?.[2]?.action || 'Alternative crop'}</h3>
+                  <div className="text-[13px] text-[#6B6F63] mt-0.5">{isLoading ? '...' : dashboardData?.advisories?.[2]?.message || 'Groundnut (88% suitable)'}</div>
                 </div>
               </div>
               <ChevronRight className="text-black/30 group-hover:text-black group-hover:translate-x-1 transition-all" />

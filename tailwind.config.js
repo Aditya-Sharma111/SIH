@@ -1,7 +1,22 @@
 module.exports = {
   content: [
     "./app/**/*.{js,ts,jsx,tsx}",
-    "./components/**/*.{js,ts,jsx,tsx}"
+    "./components/**/*.{js,ts,jsx,tsx}",
+    "./farmer deshboard/**/*.{js,ts,jsx,tsx}",
+    "./farmer profile/**/*.{js,ts,jsx,tsx}",
+    "./Crop Monitoring page/**/*.{js,ts,jsx,tsx}",
+    "./Crop Details/**/*.{js,ts,jsx,tsx}",
+    "./Full crop guide/**/*.{js,ts,jsx,tsx}",
+    "./Alternative crop/**/*.{js,ts,jsx,tsx}",
+    "./marketpage/**/*.{js,ts,jsx,tsx}",
+    "./Equipment page Dashboard/**/*.{js,ts,jsx,tsx}",
+    "./insurance/**/*.{js,ts,jsx,tsx}",
+    "./notification page/**/*.{js,ts,jsx,tsx}",
+    "./Government equipment schemes/**/*.{js,ts,jsx,tsx}",
+    "./Financial Support/**/*.{js,ts,jsx,tsx}",
+    "./Bank Portal/**/*.{js,ts,jsx,tsx}",
+    "./Agriculture officer dashboard/**/*.{js,ts,jsx,tsx}",
+    "./lib/**/*.{js,ts,jsx,tsx}"
   ],
   theme: {
     extend: {
